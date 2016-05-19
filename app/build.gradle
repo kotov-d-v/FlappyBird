@@ -1,0 +1,40 @@
+apply plugin: 'com.android.model.application'
+
+model {
+    android {
+        compileSdkVersion = 22
+        buildToolsVersion = "23.0.2"
+
+        defaultConfig.with {
+            applicationId = "com.dmitrykotov.flappybird"
+            minSdkVersion.apiLevel = 10
+            targetSdkVersion.apiLevel = 22
+            versionCode = 1
+            versionName = "1.0"
+        }
+    }
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles.add(file('proguard-android.txt'))
+        }
+    }
+    android.ndk {
+        moduleName = "native-engine"
+        stl = "gnustl_static"
+
+        cppFlags.addAll([
+                "-std=c++11", "-fexceptions",
+                "-I" + file("src/main/jni/core").absolutePath,
+                "-I" + file("src/main/jni").absolutePath
+        ])
+
+        ldLibs.addAll(["android", "EGL", "GLESv2"])
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+}
